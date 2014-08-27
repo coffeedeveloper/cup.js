@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <script type="text/javascript" charset="utf-8" src="cup.js"> </script>
+</head>
+<body>
+  <script type="text/javascript" charset="utf-8">
+    function Foo () {
+      this.name = 'hxy'
+      this.init()
+    }
+    Foo.prototype = {
+      init: function () {
+        cup.setParent(this)
+      },
+      foo: function () {
+        
+      },
+      boo: function () {
+        
+      },
+      inner: {
+        oh: function () {
+          console.log(this)
+          console.log(this.parent)
+          console.log(this.parent.name)
+        },
+        yes: {
+          haha: function () {
+            console.log(this)
+            console.log(this.parent)
+            console.log(this.parent.parent)
+          }
+        }
+      }
+    }
+    var obj = new Foo();
+    obj.inner.yes.haha()
+    
+  </script>
+</body>
+</html>
