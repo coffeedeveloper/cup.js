@@ -1,0 +1,21 @@
+{
+  "name": "cup",
+  "main": "cup.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/coffeedeveloper/cup",
+  "authors": [
+    "CoffeeDeveloper <coffeedeveloper@gmail.com>"
+  ],
+  "description": "cup is javascript helpful library",
+  "keywords": [
+    "cup"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
