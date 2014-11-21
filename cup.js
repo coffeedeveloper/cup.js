@@ -14,22 +14,24 @@
 	cup.console = {}
 
 	cup.console.log = function (msg) {
-		if ('console' in root) {
-			root.console.log(msg)
-		}
+		if ('console' in root) root.console.log(msg)
 	}
 
 	cup.console.error = function (msg) {
-		if ('console' in root) {
-			root.console.error(msg)
-		}
+		if ('console' in root) root.console.error(msg)
 	}
 
 	cup.console.warn = function (msg) {
-		if ('console' in root) {
-			root.console.warn(msg);
-		}
+		if ('console' in root) root.console.warn(msg)
 	}
+
+	cup.proto = {}
+
+	cup.proto.obj = Object.prototype
+
+	cup.proto.str = String.prototype
+
+	cup.proto.arr = Array.prototype
 
 	cup.reg = {}
 
@@ -44,12 +46,13 @@
 
 	cup.is = {}
 
+	//IE8 null and undefined is [object Object]
 	cup.isObject = cup.is.obj = function (obj) {
-		return Object.prototype.toString.call(obj) === '[object Object]'
+		return cup.proto.obj.toString.call(obj) === '[object Object]' && !!obj
 	}
 
 	cup.isReg = cup.is.reg = function (reg) {
-		return Object.prototype.toString.call(reg) === '[object RegExp]'
+		return cup.proto.obj.toString.call(reg) === '[object RegExp]'
 	}
 
 	cup.isNumber = cup.is.num = function (n) {
@@ -64,9 +67,9 @@
 		return typeof str === 'string'
 	}
 
-	cup.isArray = cup.is.array = function (arr) {
+	cup.isArray = cup.is.arr = function (arr) {
 		return 'isArray' in Array ? Array.isArray(arr)
-				  : Object.prototype.toString.call(arr) === '[object Array]'
+				  :  cup.proto.obj.toString.call(arr) === '[object Array]'
 	}
 
 	cup.isLink = cup.is.link = function (link) {
@@ -101,8 +104,8 @@
 
 	cup.trim = function (str, trim) {
 
-		if (!trim && 'trim' in String.prototype) {
-			return String.prototype.trim.call(str)
+		if (!trim && 'trim' in cup.proto.str) {
+			return cup.proto.str.trim.call(str)
 		}
 
 		var whitespace = trim || ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000'
@@ -137,6 +140,14 @@
 		return r
 	}
 
+	cup.random = function (min, max) {
+		if (max == null || max == undefined) {
+			max = min
+			min = 0
+		}
+		return min + Math.floor(Math.random() * (max - min + 1))
+	}
+
 	cup.setParent = function (obj) {
 		if (!obj) return
 		for (var o in obj) {
@@ -146,7 +157,6 @@
 			}
 		}
 	}
-
 
 	cup.json = {}
 

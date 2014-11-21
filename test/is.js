@@ -3,25 +3,25 @@ describe('array variable check', function() {
 
   it('null should be is not array', function() {
     input = null;
-    expect(false).toBe(cup.is.array(input));
+    expect(false).toBe(cup.is.arr(input));
     expect(false).toBe(cup.isArray(input));
   });
 
   it('undefined should be is not array', function() {
     input = undefined;
-    expect(false).toBe(cup.is.array(input));
+    expect(false).toBe(cup.is.arr(input));
     expect(false).toBe(cup.isArray(input));
   });
 
   it('[] should be is array', function() {
     input = [];
-    expect(true).toBe(cup.is.array(input));
+    expect(true).toBe(cup.is.arr(input));
     expect(true).toBe(cup.isArray(input));
   });
 
   it('object should be is not array', function() {
     input = {};
-    expect(false).toBe(cup.is.array(input));
+    expect(false).toBe(cup.is.arr(input));
     expect(false).toBe(cup.isArray(input));
   });
 
