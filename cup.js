@@ -11,14 +11,17 @@
 
   cup.noop = function() {}
 
-  cup.reg = {
-    escape: function(s) {
-      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
-    },
-    ip: /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/g
+
+  cup.reg = {}
+
+  cup.regEscape = cup.reg.escape = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
   }
 
-  /*cup check variable start*/
+  cup.regIP = cup.reg.ip = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/g
+  
+
+
   cup.is = {}
 
   cup.isObject = cup.is.obj = function(obj) {
@@ -60,7 +63,6 @@
       return cup.reg.ip.test(ip)
   }
 
-  /*cup check variable end*/
 
   cup.round = function(num, fix, isTrim) {
     var r = parseFloat(num)
@@ -85,85 +87,76 @@
       }
   }
 
-  /*cup json start*/
-  cup.json = {
-    parse: function(str) {
-      if (cup.is.str(str)) {
-        if ('JSON' in root || JSON)
-          return JSON.parse(str)
-        else
-          return eval('(' + str + ')')
-      } else {
-        return str
-      }
-    },
-    stringify: function(json) {
-      return root.JSON.stringify(json)
+
+  cup.json = {}
+
+  cup.jsonParse = cup.json.parse = function(str) {
+    if (cup.is.str(str)) {
+      if ('JSON' in root || JSON)
+        return JSON.parse(str)
+      else
+        return eval('(' + str + ')')
+    } else {
+      return str
     }
   }
-  cup.strToJson = cup.json.parse
-  cup.jsonToStr = function(json) {
-    if (root.JSON) {
-      return root.JSON.stringify(json)
-    }
+
+  cup.jsonStringify = cup.json.stringify = function(json) {
+    return root.JSON.stringify(json)
   }
-  /*cup json end*/
+  
 
-  /*uri start*/
-  cup.url = {
-    decode: function(url) {
-      if ('decodeURIComponent' in root)
-        return decodeURIComponent(url)
-      return unescape(url)
-    },
-    encode: function(url) {
-      if ('decodeURIComponent' in root)
-        return encodeURIComponent(url)
-      return escape(url)
-    },
-    full: function(url) {
-      if(!cup.is.str(url))
-        return url
-      return url.indexOf('http://') != 0 ? 'http://' + url : url
-    },
-    host: function(url) {
-      if(!cup.is.str(url))
-        return url
+  cup.url = {}
 
-      var host = ''
+  cup.decodeUrl = cup.url.decode = function(url) {
+    if ('decodeURIComponent' in root)
+      return decodeURIComponent(url)
+    return unescape(url)
+  }
+  
+  cup.encodeUrl = cup.url.encode = function(url) {
+    if ('decodeURIComponent' in root)
+      return encodeURIComponent(url)
+    return escape(url)
+  }
 
-      var getHost = function(val) {
-        if (val.indexOf('http://') == 0)
-          val = val.replace('http://', '')
-        ['/', '?', ':'].forEach(function(s) {
-          var i = val.indexOf(s)
-          if (i > -1)
-            val = val.substr(0, i)
-        })
-        return val
-      }
+  cup.getFullUrl = cup.url.full = function(url) {
+    if(!cup.is.str(url))
+      return url
+    return url.indexOf('http://') != 0 ? 'http://' + url : url
+  }
+  
+  cup.getUrlHost = cup.url.host = function(url) {
+    if(!cup.is.str(url))
+      return url
 
-      try {
-        if('URL' in root && 'host' in URL)
-          host = (new URL(url)).host
-        else
-          host = getHost(url)
-      } catch (e) {
+    var host = ''
+
+    var getHost = function(val) {
+      if (val.indexOf('http://') == 0)
+        val = val.replace('http://', '')
+      ['/', '?', ':'].forEach(function(s) {
+        var i = val.indexOf(s)
+        if (i > -1)
+          val = val.substr(0, i)
+      })
+      return val
+    }
+
+    try {
+      if('URL' in root && 'host' in URL)
+        host = (new URL(url)).host
+      else
         host = getHost(url)
-      }
-
-      return host
+    } catch (e) {
+      host = getHost(url)
     }
+
+    return host
   }
 
-  cup.encodeUrl = cup.url.encode
-  cup.decodeUrl = cup.url.decode
-  cup.getFullUrl = cup.url.full
-  cup.getUrlHost = cup.url.host
 
-
-
-  cup.webSocket = function(opts) {
+  cup.websocket = function(opts) {
     var socket = new WebSocket(opts.url)
     socket.onopen = opts.open || cup.noop
     socket.onclose = opts.close || cup.noop
