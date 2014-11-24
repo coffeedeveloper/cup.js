@@ -156,6 +156,27 @@
     return min + Math.floor(Math.random() * (max - min + 1))
   }
 
+  cup.each = function (eles, callback) {
+    if (eles == null || eles == undefined) return eles
+    var i, len = eles.length
+    if (cup.is.num(len)) {
+      if (cup.is.func(callback)) {
+        for (i = 0; i < len; i++) {
+          callback(eles[e], i, eles)
+        }
+      }
+    } else {
+      i = 0
+      if (cup.is.func(callback)) {
+        for (var e in eles) {
+          callback(eles[e], i, eles)
+          i++
+        }
+      }
+    }
+    return eles
+  }
+
   cup.setParent = function (obj) {
     if (!obj) return
     for (var o in obj) {
