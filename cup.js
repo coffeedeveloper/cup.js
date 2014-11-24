@@ -171,7 +171,7 @@
     if (cup.is.num(len)) {
       if (cup.is.func(callback)) {
         for (i = 0; i < len; i++) {
-          callback(eles[e], i, eles)
+          callback(eles[i], i, eles)
         }
       }
     } else {

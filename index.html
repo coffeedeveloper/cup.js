@@ -59,7 +59,16 @@
     console.log(html)
       arr.push(console.timeEnd('template'));
   }
-  console.log(arr)
+
+  cup.each({a:'1', b: '3'}, function(d, i) {
+    console.log(d);
+    console.log(i);
+  })
+
+  cup.each([4,5,6,7,9], function(d, i) {
+    console.log(d);
+    console.log(i);
+  })
     // cup.db.del('b')
     // console.log(cup.db.get('b'))
   </script>
