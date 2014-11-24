@@ -109,6 +109,15 @@
     return result;
   }
 
+  cup.isJson = cup.is.json = function (text) {
+    if (/^[\],:{}\s]*$/
+       .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+       .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+       .replace(/(?:^|:|,)(?:\s*\[)+/g, '')))
+       return true
+    return false
+  }
+
 
   cup.trim = function (str, trim) {
 
@@ -439,7 +448,7 @@
     var val = cup.support.localStorage ?
                 root.localStorage.getItem(key) :
                 cup.cookie.get(cup.db.prefix + key)
-    return val ? cup.json.parse(val) : defval
+    return val ? cup.is.json(val) ? cup.json.parse(val) : val : defval
   }
 
   cup.db.set = function(key, val) {
@@ -447,8 +456,8 @@
     if(!cup.is.str(val))
       _v = cup.json.stringify(val)
     cup.support.localStorage ?
-      root.localStorage.setItem(cup.db.prefix + key, _v) :
-      cup.cookie.set(key, _v)
+      root.localStorage.setItem(key, _v) :
+      cup.cookie.set(cup.db.prefix + key, _v)
   }
 
   cup.db.del = function(key) {
@@ -475,35 +484,49 @@
 
   cup.template.cache = []
 
-  cup.template.parse = function (tpl, data) {
+  cup.template.parse = function (tpl, data, cache) {
     var reg = /<%(.+?)%>/g,
       jsReg = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
       code = 'with(obj) { var __r__ = [];\n',
       cursor = 0,
       result,
-      match
+      match,
+      cacheCode = ''
 
-    var add = function (line, js) {
-      line = cup.trim(line)
-      js ? (code += line.match(jsReg) ? line + '\n' : '__r__.push(' + line + ');\n') :
-          (code += line ? '__r__.push("' + line.replace(/"/g, '\\"') + '");\n' : '')
-      return add
+
+    if (cache) {
+      cacheCode = cup.db.get(cache)
     }
 
-    while (match = reg.exec(tpl)) {
-      add(tpl.slice(cursor, match.index))(match[1], true)
-      cursor = match.index + match[0].length
-    }
+    if (!cacheCode) {
+      var add = function (line, js) {
+        line = cup.trim(line)
+        js ? (code += line.match(jsReg) ? line + '\n' : '__r__.push(' + line + ');\n') :
+            (code += line ? '__r__.push("' + line.replace(/"/g, '\\"') + '");\n' : '')
+        return add
+      }
 
-    add(tpl.substr(cursor, tpl.length - cursor))
-    code = (code + 'return __r__.join(""); }').replace(/[\r\t\n]/g, '')
+      while (match = reg.exec(tpl)) {
+        add(tpl.slice(cursor, match.index))(match[1], true)
+        cursor = match.index + match[0].length
+      }
+
+      add(tpl.substr(cursor, tpl.length - cursor))
+      code = (code + 'return __r__.join(""); }').replace(/[\r\t\n]/g, '')
+
+      if (cache) {
+        cup.db.set(cache, code)
+      }
+
+    } else {
+      code = cacheCode
+    }
 
     try {
       result = new Function('obj', code).apply(data, [data])
     } catch (e) {
       cup.console.error("'" + e.message + "'", 'in \n\n Code: \n', code, '\n')
     }
-
     return result
   }
 
