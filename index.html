@@ -14,7 +14,6 @@
     // console.log(cup.cookie.del('test2'))
     // console.log(document.cookie)
 
-    //cup.support.localStorage = false;
 
     cup.db.set('a', {x: 1, y: 2});
     console.log(cup.db.get('a'))
@@ -30,6 +29,37 @@
     cup.db.set('d', 123)
     console.log(cup.db.get('d'))
 
+    console.log(cup.db.size())
+
+    cup.db.del('d')
+    console.log(cup.db.size())
+
+    var arr = []
+    for(var i = 0; i < 100; i++) {
+      console.time('template');
+    var tmpl = '<h1><% title %></h1><ul><% for(var i=0; i<list.length;i++) {%><li><a href="javascript:;"><% list[i].url %></a></li><%}%>';
+    var data = {
+      title: 'hxy',
+      list: [
+        { url: '1' },
+        { url: '2' },
+        { url: '3' },
+        { url: '4' },
+        { url: '5' },
+        { url: '6' },
+        { url: '7' },
+        { url: '8' },
+        { url: '9' },
+        { url: '10' },
+        { url: '11' },
+        { url: '12' }
+      ]
+    }
+    var html = cup.template.parse(tmpl, data, 'temp');
+    console.log(html)
+      arr.push(console.timeEnd('template'));
+  }
+  console.log(arr)
     // cup.db.del('b')
     // console.log(cup.db.get('b'))
   </script>

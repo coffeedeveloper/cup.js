@@ -463,35 +463,49 @@
 
   cup.template.cache = []
 
-  cup.template.parse = function (tpl, data) {
+  cup.template.parse = function (tpl, data, cache) {
     var reg = /<%(.+?)%>/g,
       jsReg = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
       code = 'with(obj) { var __r__ = [];\n',
       cursor = 0,
       result,
-      match
+      match,
+      cacheCode = ''
 
-    var add = function (line, js) {
-      line = cup.trim(line)
-      js ? (code += line.match(jsReg) ? line + '\n' : '__r__.push(' + line + ');\n') :
-          (code += line ? '__r__.push("' + line.replace(/"/g, '\\"') + '");\n' : '')
-      return add
+
+    if (cache) {
+      cacheCode = cup.db.get(cache)
     }
 
-    while (match = reg.exec(tpl)) {
-      add(tpl.slice(cursor, match.index))(match[1], true)
-      cursor = match.index + match[0].length
-    }
+    if (!cacheCode) {
+      var add = function (line, js) {
+        line = cup.trim(line)
+        js ? (code += line.match(jsReg) ? line + '\n' : '__r__.push(' + line + ');\n') :
+            (code += line ? '__r__.push("' + line.replace(/"/g, '\\"') + '");\n' : '')
+        return add
+      }
 
-    add(tpl.substr(cursor, tpl.length - cursor))
-    code = (code + 'return __r__.join(""); }').replace(/[\r\t\n]/g, '')
+      while (match = reg.exec(tpl)) {
+        add(tpl.slice(cursor, match.index))(match[1], true)
+        cursor = match.index + match[0].length
+      }
+
+      add(tpl.substr(cursor, tpl.length - cursor))
+      code = (code + 'return __r__.join(""); }').replace(/[\r\t\n]/g, '')
+
+      if (cache) {
+        cup.db.set(cache, code)
+      }
+
+    } else {
+      code = cacheCode
+    }
 
     try {
       result = new Function('obj', code).apply(data, [data])
     } catch (e) {
       cup.console.error("'" + e.message + "'", 'in \n\n Code: \n', code, '\n')
     }
-
     return result
   }
 
