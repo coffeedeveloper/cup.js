@@ -109,6 +109,15 @@
     return result;
   }
 
+  cup.isJson = cup.is.json = function (text) {
+    if (/^[\],:{}\s]*$/
+       .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+       .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+       .replace(/(?:^|:|,)(?:\s*\[)+/g, '')))
+       return true
+    return false
+  }
+
 
   cup.trim = function (str, trim) {
 
@@ -418,7 +427,7 @@
     var val = cup.support.localStorage ?
                 root.localStorage.getItem(key) :
                 cup.cookie.get(cup.db.prefix + key)
-    return val ? cup.json.parse(val) : defval
+    return val ? cup.is.json(val) ? cup.json.parse(val) : val : defval
   }
 
   cup.db.set = function(key, val) {
@@ -426,8 +435,8 @@
     if(!cup.is.str(val))
       _v = cup.json.stringify(val)
     cup.support.localStorage ?
-      root.localStorage.setItem(cup.db.prefix + key, _v) :
-      cup.cookie.set(key, _v)
+      root.localStorage.setItem(key, _v) :
+      cup.cookie.set(cup.db.prefix + key, _v)
   }
 
   cup.db.del = function(key) {

@@ -5,17 +5,18 @@
   <title>Document</title>
   <script src="cup.js"></script>
   <script>
-    console.log(document.cookie)
-    cup.cookie.set('test', 'hello')
-    cup.cookie.set('xxx', '999')
-    cup.cookie.set('ooo', 123)
-    console.log(document.cookie)
-    console.log(cup.cookie.get('test'))
-    console.log(cup.cookie.keys())
+    // console.log(document.cookie)
+    // cup.cookie.set('test', 'hello')
+    // cup.cookie.set('xxx', '999')
+    // cup.cookie.set('ooo', 123)
+    // console.log(cup.cookie.get('test'))
+    // console.log(cup.cookie.keys())
     // console.log(cup.cookie.del('test2'))
     // console.log(document.cookie)
 
-    // cup.db.set('a', {x: 1, y: 2});
+    //cup.support.localStorage = false;
+
+    cup.db.set('a', {x: 1, y: 2});
     console.log(cup.db.get('a'))
     // cup.db.del('a')
     // console.log(cup.db.get('a'))
@@ -23,6 +24,11 @@
     cup.db.set('b', [{x: 1, y: 2}]);
     console.log(cup.db.get('b'))
 
+    cup.db.set('c', 'hahaha');
+    console.log(cup.db.get('c'));
+
+    cup.db.set('d', 123)
+    console.log(cup.db.get('d'))
 
     // cup.db.del('b')
     // console.log(cup.db.get('b'))
