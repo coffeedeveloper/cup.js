@@ -62,7 +62,7 @@ cup.is.ip('192.168.1.1') //true
 ---
 
 ### 数据存储
-默认使用localStroage实现，如果浏览器不支持localStroage则用cookie
+默认使用localStorage实现，如果浏览器不支持localStorage则用cookie
 
 ##### `cup.db.set`
 设置存储区内容，如果内容是对象或者数组会自动序列化成字符串
