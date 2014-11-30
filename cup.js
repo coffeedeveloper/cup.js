@@ -40,7 +40,6 @@
   })()
 
 
-
   cup.reg = {}
 
   cup.regEscape = cup.reg.escape = function (s) {
@@ -54,13 +53,17 @@
 
   cup.is = {}
 
+  cup.isType = cup.is.type = function (o, t) {
+    return cup.proto.obj.toString.call(o) === '[object ' + t + ']'
+  }
+
   //IE8 null and undefined is [object Object]
   cup.isObject = cup.is.obj = function (obj) {
-    return cup.proto.obj.toString.call(obj) === '[object Object]' && !!obj
+    return cup.is.type(obj, 'Object') && !!obj
   }
 
   cup.isReg = cup.is.reg = function (reg) {
-    return cup.proto.obj.toString.call(reg) === '[object RegExp]'
+    return cup.is.type(reg, 'RegExp')
   }
 
   cup.isNumber = cup.is.num = function (n) {
@@ -77,7 +80,7 @@
 
   cup.isArray = cup.is.arr = function (arr) {
     return 'isArray' in Array ? Array.isArray(arr)
-          :  cup.proto.obj.toString.call(arr) === '[object Array]'
+          : cup.is.type(arr, 'Array')
   }
 
   cup.isLink = cup.is.link = function (link) {
@@ -400,13 +403,16 @@
       var parts = cookies[i].split('=')
       var name = parts[0]
       if(key && key === name)
-        return parts[1]
+        return cup.url.decode(parts[1])
     }
     return defval
   }
 
   cup.cookie.set = function(key, val, opts) {
     opts = opts || {}
+
+    if (cup.is.num(opts))
+      opts = { expires: opts }
 
     if (cup.is.num(opts.expires)) {
 			var days = opts.expires,
@@ -415,12 +421,12 @@
 		}
 
     return document.cookie = [
-				key, '=', val,
-				opts.expires ? '; expires=' + opts.expires.toUTCString() : '',
-				opts.path    ? '; path=' + opts.path : '',
-				opts.domain  ? '; domain=' + opts.domain : '',
-				opts.secure  ? '; secure' : ''
-		].join('')
+		        key, '=', cup.url.encode(val),
+		        opts.expires ? '; expires=' + opts.expires.toUTCString() : '',
+				    opts.path    ? '; path=' + opts.path : '',
+				    opts.domain  ? '; domain=' + opts.domain : '',
+				    opts.secure  ? '; secure' : ''
+		      ].join('')
   }
 
   cup.cookie.del = function(key) {
@@ -492,7 +498,6 @@
       result,
       match,
       cacheCode = ''
-
 
     if (cache) {
       cacheCode = cup.db.get(cache)
