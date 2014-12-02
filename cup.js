@@ -57,28 +57,9 @@
     return cup.proto.obj.toString.call(o) === '[object ' + t + ']'
   }
 
-  //IE8 null and undefined is [object Object]
   cup.isObject = cup.is.obj = function (obj) {
     return cup.is.type(obj, 'Object') && !!obj
   }
-
-  /*
-  cup.each([
-    { full: 'Reg', abbr: 'reg', native: 'RegExp' },
-    { full: 'Number', abbr: 'num', native: 'Number' },
-    { full: 'Boolean', abbr: 'bool', native: 'Boolean' },
-    { full: 'Function', abbr: 'func', native: 'Function' },
-    { full: 'String', abbr: 'str', native: 'String' },
-    { full: 'Date', abbr: 'date', native: 'Date' },
-    { full: 'Null', abbr: 'nil', native: 'Null' },
-    { full: 'Undefined', abbr: 'undef', native: 'Undefined' }
-  ], function (o) {
-    cup['is'+o.full] = cup.is[o.abbr] = function (obj) {
-      return cup.is.type(obj, o.native)
-    }
-  })
-  */
-
 
   cup.isReg = cup.is.reg = function (obj) {
     return cup.is.type(obj, 'RegExp')
