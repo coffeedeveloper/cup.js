@@ -62,29 +62,62 @@
     return cup.is.type(obj, 'Object') && !!obj
   }
 
-  cup.isReg = cup.is.reg = function (reg) {
-    return cup.is.type(reg, 'RegExp')
+  /*
+  cup.each([
+    { full: 'Reg', abbr: 'reg', native: 'RegExp' },
+    { full: 'Number', abbr: 'num', native: 'Number' },
+    { full: 'Boolean', abbr: 'bool', native: 'Boolean' },
+    { full: 'Function', abbr: 'func', native: 'Function' },
+    { full: 'String', abbr: 'str', native: 'String' },
+    { full: 'Date', abbr: 'date', native: 'Date' },
+    { full: 'Null', abbr: 'nil', native: 'Null' },
+    { full: 'Undefined', abbr: 'undef', native: 'Undefined' }
+  ], function (o) {
+    cup['is'+o.full] = cup.is[o.abbr] = function (obj) {
+      return cup.is.type(obj, o.native)
+    }
+  })
+  */
+
+  cup.isReg = cup.is.reg = function (obj) {
+    return cup.is.type(obj, 'RegExp')
   }
 
-  cup.isNumber = cup.is.num = function (n) {
-    return cup.is.type(n, 'Number')
+  cup.isNumber = cup.is.num = function (obj) {
+    return cup.is.type(obj, 'Number')
   }
 
-  cup.isBoolean = cup.is.bool = function (b) {
-    return cup.is.type(b, 'Boolean')
+  cup.isBoolean = cup.is.bool = function (obj) {
+    return cup.is.type(obj, 'Boolean')
   }
 
-  cup.isFunction = cup.is.func = function (f) {
-    return cup.is.type(f, 'Function')
+  cup.isFunction = cup.is.func = function (obj) {
+    return cup.is.type(obj, 'Function')
   }
 
-  cup.isString = cup.is.str = function (str) {
-    return cup.is.type(str, 'String')
+  cup.isString = cup.is.str = function (obj) {
+    return cup.is.type(obj, 'String')
   }
 
-  cup.isArray = cup.is.arr = function (arr) {
-    return 'isArray' in Array ? Array.isArray(arr)
-          : cup.is.type(arr, 'Array')
+  cup.isArray = cup.is.arr = function (obj) {
+    return 'isArray' in Array ? Array.isArray(obj)
+          : cup.is.type(obj, 'Array')
+  }
+
+  cup.isDate = cup.is.date = function (obj) {
+    return cup.is.type(obj, 'Date')
+  }
+
+  cup.isNull = cup.is.nil = function (obj) {
+    return cup.is.type(obj, 'Null')
+  }
+
+  cup.isUndefined = cup.is.undef = function (obj) {
+    return cup.is.type(obj, 'Undefined')
+  }
+
+  cup.isElement = cup.is.ele = function (obj) {
+    return cup.is.obj(obj) && obj.nodeType === 1
   }
 
   cup.isLink = cup.is.link = function (link) {
