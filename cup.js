@@ -1,4 +1,4 @@
-(function () {
+;(function () {
   var root = this
 
   var cup = function (obj) {
@@ -67,15 +67,19 @@
   }
 
   cup.isNumber = cup.is.num = function (n) {
-    return typeof n === 'number'
+    return cup.is.type(n, 'Number')
+  }
+
+  cup.isBoolean = cup.is.bool = function (b) {
+    return cup.is.type(b, 'Boolean')
   }
 
   cup.isFunction = cup.is.func = function (f) {
-    return typeof f === 'function'
+    return cup.is.type(f, 'Function')
   }
 
   cup.isString = cup.is.str = function (str) {
-    return typeof str === 'string'
+    return cup.is.type(str, 'String')
   }
 
   cup.isArray = cup.is.arr = function (arr) {
