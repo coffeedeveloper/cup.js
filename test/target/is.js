@@ -121,3 +121,122 @@ describe('object variable check', function () {
     expect(false).toBe(cup.isObject(input));
   });
 });
+
+describe('number variable check', function () {
+  var input;
+
+  it('null should be is not number', function() {
+    input = null;
+    expect(false).toBe(cup.is.num(input));
+    expect(false).toBe(cup.isNumber(input));
+  });
+
+  it('undefined should be is not number', function() {
+    input = undefined;
+    expect(false).toBe(cup.is.num(input));
+    expect(false).toBe(cup.isNumber(input));
+  });
+
+  it('"123" should be is not number', function() {
+    input = "123";
+    expect(false).toBe(cup.is.num(input));
+    expect(false).toBe(cup.isNumber(input));
+  });
+
+  it('123 should be is number', function() {
+    input = 123;
+    expect(true).toBe(cup.is.num(input));
+    expect(true).toBe(cup.isNumber(input));
+  });
+});
+
+
+describe('bool variable check', function () {
+  var input;
+
+  it('"true" should be is not bool', function() {
+    input = "true";
+    expect(false).toBe(cup.is.bool(input));
+    expect(false).toBe(cup.isBoolean(input));
+  });
+
+  it('true should be is bool', function() {
+    input = true;
+    expect(true).toBe(cup.is.bool(input));
+    expect(true).toBe(cup.isBoolean(input));
+  });
+
+  it('false should be is bool', function() {
+    input = false;
+    expect(true).toBe(cup.is.bool(input));
+    expect(true).toBe(cup.isBoolean(input));
+  });
+});
+
+describe('null variable check', function () {
+  var input;
+
+  it('null should be is null', function() {
+    input = null;
+    expect(true).toBe(cup.is.nil(input));
+    expect(true).toBe(cup.isNull(input));
+  });
+
+  it('undefined should be is not null', function() {
+    input = undefined;
+    expect(false).toBe(cup.is.nil(input));
+    expect(false).toBe(cup.isNull(input));
+  });
+
+});
+
+describe('undefined variable check', function () {
+  var input;
+
+  it('undefined should be is undefined', function() {
+    input = undefined;
+    expect(true).toBe(cup.is.undef(input));
+    expect(true).toBe(cup.isUndefined(input));
+  });
+
+  it('null should be is not undefined', function() {
+    input = null;
+    expect(false).toBe(cup.is.undef(input));
+    expect(false).toBe(cup.isUndefined(input));
+  });
+
+});
+
+describe('empty variable check', function () {
+  var input;
+
+  it('undefined should be is empty', function() {
+    input = undefined;
+    expect(true).toBe(cup.is.empty(input));
+    expect(true).toBe(cup.isEmpty(input));
+  });
+
+  it('null should be is empty', function() {
+    input = null;
+    expect(true).toBe(cup.is.empty(input));
+    expect(true).toBe(cup.isEmpty(input));
+  });
+
+  it('[] should be is empty', function() {
+    input = [];
+    expect(true).toBe(cup.is.empty(input));
+    expect(true).toBe(cup.isEmpty(input));
+  });
+
+  it('{} should be is empty', function() {
+    input = {};
+    expect(true).toBe(cup.is.empty(input));
+    expect(true).toBe(cup.isEmpty(input));
+  });
+
+  it('"" should be is empty', function() {
+    input = "";
+    expect(true).toBe(cup.is.empty(input));
+    expect(true).toBe(cup.isEmpty(input));
+  });
+});

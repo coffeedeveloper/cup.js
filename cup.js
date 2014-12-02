@@ -79,6 +79,7 @@
   })
   */
 
+
   cup.isReg = cup.is.reg = function (obj) {
     return cup.is.type(obj, 'RegExp')
   }
@@ -114,6 +115,16 @@
 
   cup.isUndefined = cup.is.undef = function (obj) {
     return cup.is.type(obj, 'Undefined')
+  }
+
+  cup.isEmpty = cup.is.empty = function (obj) {
+    if(cup.is.nil(obj) || cup.is.undef(obj)) return true
+    if(cup.is.arr(obj) || cup.is.str(obj)) return obj.length === 0
+    if(cup.is.obj(obj))
+      for(var p in obj)
+        if(cup.obj.has(obj, p))
+          return false
+    return true
   }
 
   cup.isElement = cup.is.ele = function (obj) {
@@ -158,6 +169,11 @@
     return false
   }
 
+  cup.obj = {}
+
+  cup.has = cup.obj.has = function (obj, key) {
+    return !cup.is.nil(obj) && cup.proto.obj.hasOwnProperty.call(obj, key)
+  }
 
   cup.trim = function (str, trim) {
 
@@ -206,21 +222,17 @@
   }
 
   cup.each = function (eles, callback) {
-    if (eles == null || eles == undefined) return eles
+    if (cup.is.nil(eles) || cup.is.undef(eles)) return eles
+    if (!cup.is.func(callback)) return eles
+
     var i, len = eles.length
     if (cup.is.num(len)) {
-      if (cup.is.func(callback)) {
-        for (i = 0; i < len; i++) {
-          callback(eles[i], i, eles)
-        }
+      for (i = 0; i < len; i++) {
+        callback(eles[i], i, eles)
       }
     } else {
-      i = 0
-      if (cup.is.func(callback)) {
-        for (var e in eles) {
-          callback(eles[e], i, eles)
-          i++
-        }
+      for (var e in eles) {
+        callback(eles[e], e, eles)
       }
     }
     return eles
