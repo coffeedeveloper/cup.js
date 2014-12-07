@@ -276,11 +276,11 @@
     var getHost = function (val) {
       if (val.indexOf('http://') == 0)
         val = val.replace('http://', '')
-        ['/', '?', ':'].forEach(function (s) {
-          var i = val.indexOf(s)
-          if (i > -1)
-            val = val.substr(0, i)
-        })
+      ;['/', '?', ':'].forEach(function (s) {
+        var i = val.indexOf(s)
+        if (i > -1)
+          val = val.substr(0, i)
+      })
       return val
     }
 
