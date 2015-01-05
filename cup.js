@@ -157,7 +157,6 @@
   }
 
   cup.trim = function (str, trim) {
-
     if (!trim && 'trim' in cup.proto.str) {
       return cup.proto.str.trim.call(str)
     }
@@ -195,7 +194,7 @@
   }
 
   cup.random = function (min, max) {
-    if (max == null || max == undefined) {
+    if (cup.is.empty(max)) {
       max = min
       min = 0
     }
@@ -516,11 +515,19 @@
     return len
   }
 
+  cup.html = {}
+
+  cup.htmlEscape = cup.html.escape = function (html) {
+    return String(html)
+            .replace('<', '%3C')
+            .replace('>', '%3E')
+  }
+
   cup.template = {}
 
   cup.template.cache = []
 
-  cup.template.parse = function (tpl, data, cache) {
+  cup.templateParse = cup.template.parse = function (tpl, data, cache) {
     var reg = /<%(.+?)%>/g,
       jsReg = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
       code = 'with(obj) { var __r__ = [];\n',
@@ -535,9 +542,28 @@
 
     if (!cacheCode) {
       var add = function (line, js) {
+        var unescape = false
+        if (js && line) {
+          unescape = line.charAt(0) === '='
+          line = line.substr(1)
+        }
+
         line = cup.trim(line)
-        js ? (code += line.match(jsReg) ? line + '\n' : '__r__.push(' + line + ');\n') :
-            (code += line ? '__r__.push("' + line.replace(/"/g, '\\"') + '");\n' : '')
+
+        if (js) {
+          if (line.match(jsReg)) {
+            code += line + '\n'
+          } else {
+            if (unescape) {
+              code += '__r__.push(' + line + ');\n'
+            } else {
+              code += '__r__.push(cup.html.escape(' + line + '));\n'
+            }
+          }
+        } else if (line) {
+          code += '__r__.push("' + line.replace(/"/g, '\\"') + '");\n'
+        }
+
         return add
       }
 
