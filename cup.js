@@ -46,9 +46,11 @@
     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
   }
 
-  cup.regIP = cup.reg.ip = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/
+  cup.regIP = cup.reg.ip = /((?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d))/;
 
-  cup.regEmail = cup.reg.email = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+  cup.regEmail = cup.reg.email = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+
+  cup.regNum = cup.reg.num = /^\d+$/;
 
 
   cup.is = {}
@@ -178,6 +180,50 @@
     }
 
     return whitespace.indexOf(str.charAt(0)) === -1 ? str : ''
+  }
+
+  cup.conv = {}
+
+  cup.conv.str = function (obj) {
+    return String(obj)
+  }
+
+  cup.conv.num = cup.conv.int = function (obj, p, defval) {
+    p = cup.is.empty(p) ? 10 : p
+    return cup.reg.num.test(obj) ? parseInt(obj, p) : defval
+  }
+
+  cup.conv.float = function (obj, defval) {
+
+  }
+
+  cup.date = {}
+
+  cup.date.str = function (date, str) {
+    var year    = date.getFullYear()
+    var month   = cup.digital.fix(date.getMonth() + 1)
+    var day     = cup.digital.fix(date.getDate())
+    var hour    = cup.digital.fix(date.getHours())
+    var miniute = cup.digital.fix(date.getMinutes())
+    var second  = cup.digital.fix(date.getSeconds())
+
+    return str.replace('yyyy', year)
+              .replace('MM', month)
+              .replace('dd', day)
+              .replace('hh', hour)
+              .replace('mm', miniute)
+              .replace('ss', second)
+  }
+
+  cup.digital = {}
+
+  cup.digital.fix = function (n) {
+    return n < 10 ? '0' + n : n
+  }
+
+  cup.digital.at = function (n, i) {
+    var s = cup.conv.str(n)
+    return s.charAt(s.length - 1 - i)
   }
 
   cup.round = function (num, fix, isTrim) {
