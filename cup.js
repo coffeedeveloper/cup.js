@@ -351,7 +351,7 @@
     return string
   }
 
-  cup.base64.encode = function (input) {
+  cup.base64Encode = cup.base64.encode = function (input) {
     var output = ""
 
     if ('btoa' in root) {
@@ -386,7 +386,7 @@
     return output
   }
 
-  cup.base64.decode = function (input) {
+  cup.base64Decode = cup.base64.decode = function (input) {
     var output = ""
 
     if ('atob' in root) {
@@ -426,7 +426,7 @@
 
   cup.cookie = {}
 
-  cup.cookie.get = function(key, defval) {
+  cup.cookieGet = cup.cookie.get = function(key, defval) {
     var cookies = document.cookie ? document.cookie.split('; ') : []
     for(var i = 0, l = cookies.length; i < l; i++) {
       var parts = cookies[i].split('=')
@@ -437,7 +437,7 @@
     return defval
   }
 
-  cup.cookie.set = function(key, val, opts) {
+  cup.cookieSet = cup.cookie.set = function(key, val, opts) {
     opts = opts || {}
 
     if (cup.is.num(opts))
@@ -458,13 +458,13 @@
 		      ].join('')
   }
 
-  cup.cookie.del = function(key) {
+  cup.cookieDel = cup.cookie.del = function(key) {
     if(cup.cookie.get(key) === undefined) return false
     cup.cookie.set(key, '', {expires: -1})
     return !cup.cookie.get(key)
   }
 
-  cup.cookie.keys = function() {
+  cup.cookieKeys = cup.cookie.keys = function() {
     var cookies = document.cookie ? document.cookie.split('; ') : []
     var arr = []
     for(var i = 0, l = cookies.length; i < l; i++) {
@@ -479,14 +479,14 @@
 
   cup.db.prefix = 'cup_db_'
 
-  cup.db.get = function(key, defval) {
+  cup.dbGet = cup.db.get = function(key, defval) {
     var val = cup.support.localStorage ?
                 root.localStorage.getItem(key) :
                 cup.cookie.get(cup.db.prefix + key)
     return val ? cup.is.json(val) ? cup.json.parse(val) : val : defval
   }
 
-  cup.db.set = function(key, val) {
+  cup.dbSet = cup.db.set = function(key, val) {
     var _v = val
     if(!cup.is.str(val))
       _v = cup.json.stringify(val)
@@ -495,13 +495,13 @@
       cup.cookie.set(cup.db.prefix + key, _v)
   }
 
-  cup.db.del = function(key) {
+  cup.dbDel = cup.db.del = function(key) {
     cup.support.localStorage ?
       root.localStorage.removeItem(key) :
       cup.cookie.del(cup.db.prefix + key)
   }
 
-  cup.db.size = function() {
+  cup.dbSize = cup.db.size = function() {
     var len = 0
     if (cup.support.localStorage) {
       len = root.localStorage.length
