@@ -8,6 +8,7 @@
 
   root.cup = cup
 
+  cup.version = '0.1.1'
 
   cup.noop = function () { }
 
@@ -50,7 +51,7 @@
 
   cup.regEmail = cup.reg.email = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
 
-  cup.regNum = cup.reg.num = /^\d+$/;
+  cup.regNum = cup.reg.num = /^[-+]?[\d]+.?\d*$/;
 
 
   cup.is = {}
@@ -188,13 +189,13 @@
     return String(obj)
   }
 
-  cup.conv.num = cup.conv.int = function (obj, p, defval) {
-    p = cup.is.empty(p) ? 10 : p
-    return cup.reg.num.test(obj) ? parseInt(obj, p) : defval
+  cup.conv.num = cup.conv.int = function (obj, radix, defval) {
+    radix = cup.is.empty(radix) ? 10 : radix
+    return cup.reg.num.test(obj) ? parseInt(obj, radix) : defval
   }
 
   cup.conv.float = function (obj, defval) {
-
+    return cup.reg.num.test(obj) ? parseFloat(obj) : defval
   }
 
   cup.date = {}
