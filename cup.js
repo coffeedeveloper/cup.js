@@ -261,7 +261,7 @@
   }
 
   cup.str.cons = function (str, sub) {
-    if ('contains' in str)
+    if ('contains' in cup.proto.str)
       return str.contains(sub)
     return str.indexOf(sub) > -1
   }
