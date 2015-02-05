@@ -308,10 +308,14 @@
 
   cup.jsonParse = cup.json.parse = function (str) {
     if (cup.is.str(str)) {
-      if ('JSON' in root || JSON)
-        return JSON.parse(str)
-      else
-        return eval('(' + str + ')')
+      try {
+        if ('JSON' in root || JSON)
+          return JSON.parse(str)
+        else
+          return eval('(' + str + ')')
+      } catch (e) {
+      	cup.console.error('data: ' + str + '\n' + 'message: ' + e)
+      }
     } else {
       return str
     }
