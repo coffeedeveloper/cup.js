@@ -8,7 +8,7 @@
 
   root.cup = cup
 
-  cup.version = '0.1.1'
+  cup.version = '0.1.2'
 
   cup.noop = function () { }
 
@@ -159,28 +159,31 @@
     return !cup.is.nil(obj) && cup.proto.obj.hasOwnProperty.call(obj, key)
   }
 
-  cup.trim = function (str, trim) {
-    if (!trim && 'trim' in cup.proto.str) {
-      return cup.proto.str.trim.call(str)
-    }
+  cup.include = cup.obj.include = function (obj) {
+    cup.each(arguments, function (d, i) {
+      if (i != 0)
+        for (var p in d)
+          obj[p] = d[p]
+    })
+  }
 
-    var whitespace = trim || ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000'
+  cup.extend = cup.obj.extend = function (obj) {
+    cup.each(arguments, function (d, i) {
+      if (i != 0)
+        for (var p in d)
+          obj.prototype[p] = d[p]
+    })
+  }
 
-    for (var i = 0, len = str.length; i < len; i++) {
-      if (whitespace.indexOf(str.charAt(i)) === -1) {
-        str = str.substring(i);
-        break;
+  cup.setParent = cup.obj.parent = function (obj) {
+    for (var o in obj) {
+      if (o !== '_parent' && obj[o]) {
+        obj[o]['_parent'] = obj
+        if (cup.is.obj(obj[o])) {
+          cup.obj.parent(obj[o])
+        }
       }
     }
-
-    for (i = str.length - 1; i >= 0; i--) {
-      if (whitespace.indexOf(str.charAt(i)) === -1) {
-        str = str.substring(0, i + 1);
-        break;
-      }
-    }
-
-    return whitespace.indexOf(str.charAt(0)) === -1 ? str : ''
   }
 
   cup.conv = {}
@@ -227,6 +230,30 @@
     return s.charAt(s.length - 1 - i)
   }
 
+  cup.trim = function (str, trim) {
+    if (!trim && 'trim' in cup.proto.str) {
+      return cup.proto.str.trim.call(str)
+    }
+
+    var whitespace = trim || ' \n\r\t\f\x0b\xa0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000'
+
+    for (var i = 0, len = str.length; i < len; i++) {
+      if (whitespace.indexOf(str.charAt(i)) === -1) {
+        str = str.substring(i);
+        break;
+      }
+    }
+
+    for (i = str.length - 1; i >= 0; i--) {
+      if (whitespace.indexOf(str.charAt(i)) === -1) {
+        str = str.substring(0, i + 1);
+        break;
+      }
+    }
+
+    return whitespace.indexOf(str.charAt(0)) === -1 ? str : ''
+  }
+
   cup.round = function (num, fix, isTrim) {
     var r = parseFloat(num)
     if (fix) {
@@ -263,16 +290,6 @@
       }
     }
     return eles
-  }
-
-  cup.setParent = function (obj) {
-    if (!obj) return
-    for (var o in obj) {
-      if (cup.isObject(obj) && obj[o] && o !== 'parent') {
-        obj[o].parent = obj
-        cup.setParent(obj[o])
-      }
-    }
   }
 
   cup.json = {}

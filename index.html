@@ -4,15 +4,31 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <script src="cup.js"></script>
-  <script>
-    console.log(document.cookie)
-    cup.cookie.set('test', '黄学宇')
-    cup.cookie.set('xxx', '999')
-    cup.cookie.set('ooo', 123)
-    console.log(cup.cookie.get('test'))
-    console.log(cup.cookie.keys())
-    console.log(cup.cookie.del('test2'))
-    console.log(document.cookie)
+  <script type="text/javascript">
+    function foo () {
+      cup.obj.parent(this)
+    }
+    foo.prototype = {
+      check: {
+        input: function(){
+          var that = this._parent
+          console.log(that)
+        },
+        checkbox: function () {
+          console.log(this._parent)
+        },
+        server: {
+          haha: function() {
+            console.log(this._parent)
+            console.log(this._parent._parent)
+          }
+        }
+      }
+    }
+    var f = new foo()
+    f.check.input()
+    f.check.server.haha()
+
 
   </script>
 </head>
