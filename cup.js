@@ -12,17 +12,17 @@
 
   cup.noop = function () { }
 
-  cup.console = {}
+  cup.cl = {}
 
-  cup.console.log = function (msg) {
+  cup.cl.log = function (msg) {
     if ('console' in root) root.console.log(msg)
   }
 
-  cup.console.error = function (msg) {
+  cup.cl.err = function (msg) {
     if ('console' in root) root.console.error(msg)
   }
 
-  cup.console.warn = function (msg) {
+  cup.cl.warn = function (msg) {
     if ('console' in root) root.console.warn(msg)
   }
 
@@ -40,7 +40,6 @@
     return 'localStorage' in root
   })()
 
-
   cup.reg = {}
 
   cup.regEscape = cup.reg.escape = function (s) {
@@ -52,7 +51,6 @@
   cup.regEmail = cup.reg.email = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
 
   cup.regNum = cup.reg.num = /^[-+]?[\d]+.?\d*$/;
-
 
   cup.is = {}
 
@@ -153,6 +151,12 @@
     return false
   }
 
+  cup.isIE = cup.is.ie = function () {
+    var ua = navigator.userAgent.toLowerCase()
+    return (cup.str.cons(ua, 'msie') && !cup.str.cons(ua, 'opera'))
+            || (!cup.str.cons(ua, 'msie') && cup.str.cons(ua, 'trident'))
+  }
+
   cup.obj = {}
 
   cup.has = cup.obj.has = function (obj, key) {
@@ -230,7 +234,9 @@
     return s.charAt(s.length - 1 - i)
   }
 
-  cup.trim = function (str, trim) {
+  cup.str = {}
+
+  cup.trim = cup.str.trim = function (str, trim) {
     if (!trim && 'trim' in cup.proto.str) {
       return cup.proto.str.trim.call(str)
     }
@@ -252,6 +258,12 @@
     }
 
     return whitespace.indexOf(str.charAt(0)) === -1 ? str : ''
+  }
+
+  cup.str.cons = function (str, sub) {
+    if ('contains' in str)
+      return str.contains(sub)
+    return str.indexOf(sub) > -1
   }
 
   cup.round = function (num, fix, isTrim) {
@@ -308,7 +320,6 @@
   cup.jsonStringify = cup.json.stringify = function (json) {
     return root.JSON.stringify(json)
   }
-
 
   cup.url = {}
 
@@ -650,7 +661,7 @@
     try {
       result = new Function('obj', code).apply(data, [data])
     } catch (e) {
-      cup.console.error("'" + e.message + "'", 'in \n\n Code: \n', code, '\n')
+      cup.cl.err("'" + e.message + "'", 'in \n\n Code: \n', code, '\n')
     }
     return result
   }
