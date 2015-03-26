@@ -1,4 +1,4 @@
-describe('array variable check', function() {
+describe('cup.is.arr: array variable check', function() {
   var input;
 
   it('null should be is not array', function() {
@@ -27,7 +27,7 @@ describe('array variable check', function() {
 
 });
 
-describe('function variable check', function () {
+describe('cup.is.func: function variable check', function () {
 
   var input;
 
@@ -59,7 +59,7 @@ describe('function variable check', function () {
 
 });
 
-describe('string variable check', function () {
+describe('cup.is.str: string variable check', function () {
   var input;
 
   it('null should be is not string', function() {
@@ -88,7 +88,7 @@ describe('string variable check', function () {
 
 });
 
-describe('object variable check', function () {
+describe('cup.is.obj: object variable check', function () {
   var input;
 
   it('null should be is not object', function() {
@@ -122,7 +122,7 @@ describe('object variable check', function () {
   });
 });
 
-describe('number variable check', function () {
+describe('cup.is.num: number variable check', function () {
   var input;
 
   it('null should be is not number', function() {
@@ -150,8 +150,7 @@ describe('number variable check', function () {
   });
 });
 
-
-describe('bool variable check', function () {
+describe('cup.is.bool: bool variable check', function () {
   var input;
 
   it('"true" should be is not bool', function() {
@@ -173,7 +172,7 @@ describe('bool variable check', function () {
   });
 });
 
-describe('null variable check', function () {
+describe('cup.is.nil: null variable check', function () {
   var input;
 
   it('null should be is null', function() {
@@ -190,7 +189,7 @@ describe('null variable check', function () {
 
 });
 
-describe('undefined variable check', function () {
+describe('cup.is.undef: undefined variable check', function () {
   var input;
 
   it('undefined should be is undefined', function() {
@@ -207,7 +206,7 @@ describe('undefined variable check', function () {
 
 });
 
-describe('empty variable check', function () {
+describe('cup.is.empty: empty variable check', function () {
   var input;
 
   it('undefined should be is empty', function() {
@@ -239,4 +238,61 @@ describe('empty variable check', function () {
     expect(true).toBe(cup.is.empty(input));
     expect(true).toBe(cup.isEmpty(input));
   });
+});
+
+describe('cup.is.reg: regular variable check', function () {
+  var input;
+
+  it('/a/ should be is regular', function () {
+    input = /a/;
+    expect(true).toBe(cup.is.reg(input));
+    expect(true).toBe(cup.isReg(input));
+  });
+
+  it('new RegExp should be is regular', function () {
+    input = new RegExp('a');
+    expect(true).toBe(cup.is.reg(input));
+    expect(true).toBe(cup.isReg(input));
+  });
+
+  it('"" should be is not regular', function () {
+    input = '';
+    expect(false).toBe(cup.is.reg(input));
+    expect(false).toBe(cup.isReg(input));
+  });
+
+});
+
+describe('cup.is.date: date variable check', function () {
+  var input;
+
+  it('new Date should be is date', function () {
+    input = new Date();
+    expect(true).toBe(cup.is.date(input));
+    expect(true).toBe(cup.isDate(input));
+  });
+
+  it('null should be is not regular', function () {
+    input = null;
+    expect(false).toBe(cup.is.date(input));
+    expect(false).toBe(cup.isDate(input));
+  });
+
+});
+
+describe('cup.is.ele: dom element variable check', function () {
+  var input;
+
+  it('document.createElement should be is dom element', function () {
+    input = document.createElement('a');
+    expect(true).toBe(cup.is.ele(input));
+    expect(true).toBe(cup.isElement(input));
+  });
+
+  it('{} should be is not dom element', function () {
+    input = {};
+    expect(false).toBe(cup.is.ele(input));
+    expect(false).toBe(cup.isElement(input));
+  });
+
 });

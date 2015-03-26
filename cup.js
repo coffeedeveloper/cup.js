@@ -8,7 +8,7 @@
 
   root.cup = cup
 
-  cup.version = '0.1.2'
+  cup.version = '1.0.0'
 
   cup.noop = function () { }
 
@@ -110,7 +110,7 @@
   }
 
   cup.isElement = cup.is.ele = function (obj) {
-    return cup.is.obj(obj) && obj.nodeType === 1
+    return typeof obj === 'object' && obj.nodeType === 1
   }
 
   cup.isLink = cup.is.link = function (link) {
@@ -143,11 +143,8 @@
   }
 
   cup.isJson = cup.is.json = function (text) {
-    if (/^[\],:{}\s]*$/
-       .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-       .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-       .replace(/(?:^|:|,)(?:\s*\[)+/g, '')))
-       return true
+    if (cup.is.str(text))
+      return !cup.is.undef(cup.json.parse(text))
     return false
   }
 
@@ -163,7 +160,7 @@
     return !cup.is.nil(obj) && cup.proto.obj.hasOwnProperty.call(obj, key)
   }
 
-  cup.include = cup.obj.include = function (obj) {
+  cup.extend = cup.obj.extend = function (obj) {
     cup.each(arguments, function (d, i) {
       if (i != 0)
         for (var p in d)
@@ -171,7 +168,7 @@
     })
   }
 
-  cup.extend = cup.obj.extend = function (obj) {
+  cup.include = cup.obj.include = function (obj) {
     cup.each(arguments, function (d, i) {
       if (i != 0)
         for (var p in d)
@@ -291,14 +288,18 @@
     if (cup.is.nil(eles) || cup.is.undef(eles)) return eles
     if (!cup.is.func(callback)) return eles
 
-    var i, len = eles.length
+    var i, len = eles.length, r
     if (cup.is.num(len)) {
       for (i = 0; i < len; i++) {
-        callback(eles[i], i, eles)
+        r = callback(eles[i], i, eles)
+        if (r === false)
+          break
       }
     } else {
       for (var e in eles) {
-        callback(eles[e], e, eles)
+        r = callback(eles[e], e, eles)
+        if (r === false)
+          break
       }
     }
     return eles
@@ -314,10 +315,12 @@
         else
           return eval('(' + str + ')')
       } catch (e) {
-      	cup.console.error('data: ' + str + '\n' + 'message: ' + e)
+      	cup.cl.err('data: ' + str + '\n' + 'message: ' + e)
       }
     } else {
-      return str
+      if (cup.is.obj(str) || cup.is.arr(str))
+        return str
+      return null
     }
   }
 
@@ -346,10 +349,10 @@
   }
 
   cup.getUrlHost = cup.url.host = function (url) {
-    if (!cup.is.str(url))
-      return url
-
     var host = ''
+
+    if (!cup.is.str(url))
+      return host
 
     var getHost = function (val) {
       if (val.indexOf('http://') == 0)
@@ -434,7 +437,7 @@
     var output = ""
 
     if ('btoa' in root) {
-      output = root.btoa(input)
+      output = root.btoa(unescape(encodeURIComponent(input)))
     } else {
       var chr1, chr2, chr3, enc1, enc2, enc3, enc4
       var i = 0
@@ -469,7 +472,7 @@
     var output = ""
 
     if ('atob' in root) {
-      output = root.atob(input)
+      output = decodeURIComponent(escape(root.atob(input)))
     } else {
       var chr1, chr2, chr3
       var enc1, enc2, enc3, enc4
@@ -498,7 +501,7 @@
 
       }
 
-      output = Base64._utf8_decode(output);
+      output = cup.base64._utf8_decode(output);
     }
     return output
   }
@@ -509,7 +512,7 @@
     var cookies = document.cookie ? document.cookie.split('; ') : []
     for(var i = 0, l = cookies.length; i < l; i++) {
       var parts = cookies[i].split('=')
-      var name = parts[0]
+      var name = cup.url.decode(parts[0])
       if(key && key === name)
         return cup.url.decode(parts[1])
     }
@@ -529,7 +532,7 @@
 		}
 
     return document.cookie = [
-		        key, '=', cup.url.encode(val),
+		        cup.url.encode(key), '=', cup.url.encode(val),
 		        opts.expires ? '; expires=' + opts.expires.toUTCString() : '',
 				    opts.path    ? '; path=' + opts.path : '',
 				    opts.domain  ? '; domain=' + opts.domain : '',
@@ -607,42 +610,36 @@
   cup.template.cache = []
 
   cup.templateParse = cup.template.parse = function (tpl, data, cache) {
-    var reg = /<%(.+?)%>/g,
-      jsReg = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
-      code = 'with(obj) { var __r__ = [];\n',
-      cursor = 0,
-      result,
-      match,
-      cacheCode = ''
+    var reg       = /<%(.+?)%>/g,
+        jsReg     = /(^( )?(var|if|for|else|switch|case|break|{|}|;))(.*)?/g,
+        code      = 'with(obj) { var __r__ = [];\n',
+        cursor    = 0,
+        result,
+        match,
+        cacheCode = ''
 
-    if (cache) {
+    if (cache)
       cacheCode = cup.db.get(cache)
-    }
 
     if (!cacheCode) {
       var add = function (line, js) {
-        var unescape = false
-        if (js && line) {
-          unescape = line.charAt(0) === '='
-          line = line.substr(1)
-        }
+        var isRaw = js && line && line.charAt(0) === '='
+        if (isRaw) line = line.substr(1)
 
         line = cup.trim(line)
 
-        if (js) {
-          if (line.match(jsReg)) {
-            code += line + '\n'
-          } else {
-            if (unescape) {
-              code += '__r__.push(' + line + ');\n'
-            } else {
-              code += '__r__.push(cup.html.escape(' + line + '));\n'
-            }
-          }
-        } else if (line) {
-          code += '__r__.push("' + line.replace(/"/g, '\\"') + '");\n'
+        if (js && line.match(jsReg)) {
+          code += line + '\n'
+          return add
         }
+        code += '__r__.push('
 
+        if (js)
+          code += isRaw ? line : 'cup.html.escape(' + line + ')'
+        else
+          code += '"' + line.replace(/"/g, '\\"') + '"'
+
+        code += ');\n'
         return add
       }
 
@@ -654,10 +651,8 @@
       add(tpl.substr(cursor, tpl.length - cursor))
       code = (code + 'return __r__.join(""); }').replace(/[\r\t\n]/g, '')
 
-      if (cache) {
+      if (cache)
         cup.db.set(cache, code)
-      }
-
     } else {
       code = cacheCode
     }
@@ -668,6 +663,15 @@
       cup.cl.err("'" + e.message + "'", 'in \n\n Code: \n', code, '\n')
     }
     return result
+  }
+
+  cup.event = {}
+
+  cup.event.stop = function (e) {
+    if ('stopPropagation' in e)
+      e.stopPropagation()
+    else
+      e.returnValue = false
   }
 
   cup.websocket = function (opts) {

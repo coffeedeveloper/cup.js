@@ -33,6 +33,19 @@
   </script>
 </head>
 <body>
+  <input type="text" value="test" id="txt" />
+  <button type="button" id="btn">click me</button>
 
+  <script type="text/javascript">
+    var btn = document.getElementById('btn');
+    btn.addEventListener('click', function (e) {
+      var text = document.getElementById('txt').value;
+      console.log(e)
+      var board = e.clipboardData;
+      console.log(board);
+      board.setData('text/plain', text);
+
+    })
+  </script>
 </body>
 </html>
