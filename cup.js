@@ -589,12 +589,26 @@
       len = root.localStorage.length
     } else {
       var keys = cup.cookie.keys()
-      for (var i = 0, l = keys.length; i < l; i++) {
+      for (var i = 0, l = keys.length; i < l; i++)
         if (keys[i].indexOf(cup.db.prefix) == 0)
           len++
-      }
     }
     return len
+  }
+
+  cup.dbKeys = cup.db.keys = function () {
+    var arr = []
+    if (cup.support.localStorage) {
+      for (var i = 0, l = root.localStorage.length; i < l; i++) {
+        arr.push(root.localStorage.key(i))
+      }
+    } else {
+      var keys = cup.cookie.keys()
+      for (var i = 0, l = keys.length; i < l; i++)
+        if (keys[i].indexOf(cup.db.prefix) == 0)
+          arr.push(keys[i].substr(cup.db.prefix.length))
+    }
+    return arr
   }
 
   cup.html = {}
