@@ -6,9 +6,16 @@
     if (!(this instanceof cup)) return new cup(obj);
   };
 
-  root.cup = cup;
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = cup;
+    }
+    exports.cup = cup;
+  } else {
+    root.cup = cup;
+  }
 
-  cup.version = '1.0.0';
+  cup.version = '1.1.0';
 
   cup.noop = function () { };
 
@@ -33,6 +40,8 @@
   cup.proto.str = String.prototype;
 
   cup.proto.arr = Array.prototype;
+
+  cup.proto.func = Function.prototype;
 
   cup.support = {};
 
@@ -702,5 +711,11 @@
       return null;
     }
   };
+
+  if (typeof define === 'function' && define.amd) {
+    define('cup', [], function () {
+      return cup;
+    });
+  }
 
 }.call(this));
