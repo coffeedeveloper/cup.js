@@ -1,0 +1,27 @@
+{
+  "name": "cupjs",
+  "version": "1.1.0",
+  "description": "javascript helper",
+  "main": "cup.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coffeedeveloper/cup.git"
+  },
+  "keywords": [
+    "javascript",
+    "cup",
+    "helper"
+  ],
+  "author": "CoffeeDeveloper",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coffeedeveloper/cup/issues"
+  },
+  "homepage": "https://github.com/coffeedeveloper/cup#readme"
+}
