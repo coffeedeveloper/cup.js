@@ -15,7 +15,7 @@
     root.cup = cup;
   }
 
-  cup.version = '1.1.1';
+  cup.version = '1.2.0';
 
   cup.noop = function () { };
 
@@ -718,5 +718,18 @@
       return cup;
     });
   }
+
+  cup._s4_ = function () {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  };
+
+  cup.guid = function (clear) {
+    var s4 = cup._s4_;
+    var result = s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    return clear ? result.replace(/-/g, '') : result;
+  };
 
 }.call(this));

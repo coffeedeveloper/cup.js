@@ -1,6 +1,6 @@
 {
   "name": "cupjs",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "javascript helper",
   "main": "cup.js",
   "directories": {
