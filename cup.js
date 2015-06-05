@@ -111,7 +111,7 @@
   cup.isEmpty = cup.is.empty = function (obj) {
     if(cup.is.nil(obj) || cup.is.undef(obj)) return true;
     if(cup.is.arr(obj) || cup.is.str(obj)) return obj.length === 0;
-    if(cup.is.ele(obj)) return false;
+    if(cup.is.ele(obj) || cup.is.num(obj)) return false;
     if(cup.is.obj(obj))
       for(var p in obj)
         if(cup.obj.has(obj, p))
