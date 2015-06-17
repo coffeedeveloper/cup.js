@@ -15,7 +15,7 @@
     root.cup = cup;
   }
 
-  cup.version = '1.3.0';
+  cup.version = '1.3.1';
 
   cup.noop = function () { };
 
@@ -628,25 +628,25 @@
   cup.htmlEncode = cup.html.encode = function (html) {
     var s = cup.conv.str(html);
     if (cup.is.empty(s)) return '';
-    return s.replace(/&/g, "&gt;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/ /g, "&nbsp;")
-            .replace(/\'/g, "&#39;")
-            .replace(/\"/g, "&quot;")
-            .replace(/\n/g, "<br>");
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/ /g, '&nbsp;')
+            .replace(/\'/g, '&#39;')
+            .replace(/\"/g, '&quot;')
+            .replace(/\n/g, '<br>');
   };
 
   cup.htmlDecode = cup.html.decode = function (html) {
     var s = cup.conv.str(html);
     if (cup.is.empty(s)) return '';
-    return s.replace(/&gt;/g, "&")
-            .replace(/&lt;/g, "<")
-            .replace(/&gt;/g, ">")
-            .replace(/&nbsp;/g, " ")
-            .replace(/&#39;/g, "\'")
-            .replace(/&quot;/g, "\"")
-            .replace(/<br>/g, "\n");
+    return s.replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&#39;/g, '\'')
+            .replace(/&quot;/g, '"')
+            .replace(/<br>/g, '\n');
   };
 
   cup.template = {};
