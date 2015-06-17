@@ -15,7 +15,7 @@
     root.cup = cup;
   }
 
-  cup.version = '1.2.0';
+  cup.version = '1.3.0';
 
   cup.noop = function () { };
 
@@ -625,10 +625,28 @@
 
   cup.html = {};
 
-  cup.htmlEscape = cup.html.escape = function (html) {
-    return String(html)
-            .replace('<', '%3C')
-            .replace('>', '%3E');
+  cup.htmlEncode = cup.html.encode = function (html) {
+    var s = cup.conv.str(html);
+    if (cup.is.empty(s)) return '';
+    return s.replace(/&/g, "&gt;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/ /g, "&nbsp;")
+            .replace(/\'/g, "&#39;")
+            .replace(/\"/g, "&quot;")
+            .replace(/\n/g, "<br>");
+  };
+
+  cup.htmlDecode = cup.html.decode = function (html) {
+    var s = cup.conv.str(html);
+    if (cup.is.empty(s)) return '';
+    return s.replace(/&gt;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&#39;/g, "\'")
+            .replace(/&quot;/g, "\"")
+            .replace(/<br>/g, "\n");
   };
 
   cup.template = {};
