@@ -22,7 +22,7 @@ jobs:
 
       - name: Bump beta version
         run: |
-          node -e "const fs=require('fs');const pkg=require('./package.json');const base=pkg.version.split('-')[0];const parts=base.split('.').map(Number);const next=`${parts[0]}.${parts[1]}.${parts[2]+1}-beta.${Date.now()}`;pkg.version=next;fs.writeFileSync('package.json',JSON.stringify(pkg,null,2)+'\n');console.log('version',next);"
+          node -e 'const fs=require("fs");const pkg=require("./package.json");const base=pkg.version.split("-")[0];const parts=base.split(".").map(Number);const next=parts[0]+"."+parts[1]+"."+(parts[2]+1)+"-beta."+Date.now();pkg.version=next;fs.writeFileSync("package.json",JSON.stringify(pkg,null,2)+"\n");console.log("version",next);'
 
       - name: Publish beta to npm
         run: npm publish --tag beta --provenance
