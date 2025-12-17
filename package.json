@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coffeedeveloper/cup.git"
+    "url": "git@github.com:coffeedeveloper/cup.js.git"
   },
   "keywords": [
     "javascript",
@@ -21,7 +21,7 @@
   "author": "CoffeeDeveloper",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/coffeedeveloper/cup/issues"
+    "url": "https://github.com/coffeedeveloper/cup.js/issues"
   },
-  "homepage": "https://github.com/coffeedeveloper/cup#readme"
+  "homepage": "https://github.com/coffeedeveloper/cup.js#readme"
 }
