@@ -2,9 +2,6 @@ name: Publish Beta
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v*'
 
 permissions:
   contents: read
@@ -22,6 +19,12 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
+
+      - name: Ensure npm is up to date
+        run: |
+          npm --version
+          npm install -g npm@latest
+          npm --version
 
       - name: Bump beta version
         run: |
